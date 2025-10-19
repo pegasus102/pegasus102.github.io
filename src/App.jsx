@@ -808,7 +808,6 @@ const HomePage = ({ handleNavigation }) => (
             <CertificatesSection />
             <GetInTouchSection handleNavigation={handleNavigation} />
         </main>
-        <Footer />
     </>
 );
 
@@ -995,6 +994,7 @@ export default function App() {
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
                     {renderPage()}
+                    {page !== 'contact' && <Footer />}
                 </>
             )}
         </div>
