@@ -833,9 +833,13 @@ export default function App() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [page, setPage] = useState('home');
     const [theme, setTheme] = useState('light');
-    const [contactMessage, setContactMessage] = useState("Hey Sid, love the website! I'd like to chat about some opportunities you might like!");
+    const [contactMessage, setContactMessage] = useState("Hey Siddharth, I am reaching out about potential opportunities that align with your skillset. I'd like to have your CV for discussing potential fits.");
+    const [isTouchDevice, setIsTouchDevice] = useState(false);
 
     useEffect(() => {
+        // Check for touch device
+        setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+        
         // Simulate initial loading time
         const timer = setTimeout(() => {
             setIsLoading(false);
@@ -984,11 +988,11 @@ export default function App() {
     };
     
     return (
-        <div className="flex flex-col min-h-screen transition-colors duration-300 bg-stone-50 dark:bg-transparent cursor-none" style={{ scrollBehavior: 'smooth' }}>
+        <div className={`flex flex-col min-h-screen transition-colors duration-300 bg-stone-50 dark:bg-transparent ${!isTouchDevice ? 'cursor-none' : ''}`} style={{ scrollBehavior: 'smooth' }}>
             {theme === 'dark' && <NightSkyBackground />}
             {isLoading ? <LoadingScreen /> : (
                 <>
-                    <CustomCursor theme={theme} />
+                    {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
                     {renderPage()}
                 </>
