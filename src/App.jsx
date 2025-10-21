@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import * as THREE from 'three';
+import Particles, { initParticlesEngine } from "@tsparticles/react";
+import { loadSlim } from "@tsparticles/slim"; 
 
 // --- Reusable Components ---
 
@@ -160,6 +162,94 @@ const CustomCursor = ({ theme }) => {
             className="fixed w-8 h-8 pointer-events-none z-50 bg-contain bg-center bg-no-repeat transform -translate-x-1/2 -translate-y-1/2"
         />
     );
+};
+
+// --- Particle Background Component ---
+const ParticleBackground = () => {
+    const [ init, setInit ] = useState(false);
+
+    useEffect(() => {
+        initParticlesEngine(async (engine) => {
+            await loadSlim(engine);
+        }).then(() => {
+            setInit(true);
+        });
+    }, []);
+
+    const options = {
+        background: {
+            color: {
+                value: "transparent",
+            },
+        },
+        fpsLimit: 120,
+        interactivity: {
+            events: {
+                onHover: {
+                    enable: true,
+                    mode: "repulse",
+                },
+                resize: true,
+            },
+            modes: {
+                repulse: {
+                    distance: 100,
+                    duration: 0.4,
+                },
+            },
+        },
+        particles: {
+            color: {
+                value: "#1f2937", // slate-800
+            },
+            links: {
+                color: "#1f2937",
+                distance: 150,
+                enable: true,
+                opacity: 0.5,
+                width: 1,
+            },
+            move: {
+                direction: "none",
+                enable: true,
+                outModes: {
+                    default: "bounce",
+                },
+                random: false,
+                speed: 1,
+                straight: false,
+            },
+            number: {
+                density: {
+                    enable: true,
+                    area: 800,
+                },
+                value: 80,
+            },
+            opacity: {
+                value: 0.5,
+            },
+            shape: {
+                type: "circle",
+            },
+            size: {
+                value: { min: 1, max: 5 },
+            },
+        },
+        detectRetina: true,
+    };
+    
+    if (init) {
+        return (
+            <Particles
+                id="tsparticles"
+                options={options}
+                className="fixed top-0 left-0 w-full h-full z-[-1]"
+            />
+        );
+    }
+
+    return <></>;
 };
 
 
@@ -987,7 +1077,6 @@ export default function App() {
     return (
         <div className={`flex flex-col min-h-screen transition-colors duration-300 bg-stone-50 dark:bg-transparent ${!isTouchDevice ? 'cursor-none' : ''}`} style={{ scrollBehavior: 'smooth' }}>
             {theme === 'dark' && <NightSkyBackground />}
-            {theme === 'light' && <ParticleBackground />}
             {isLoading ? <LoadingScreen /> : (
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
