@@ -922,9 +922,7 @@ export default function App() {
             body {
                 font-family: 'Poppins', sans-serif;
             }
-            .cursor-none, .cursor-none * {
-                cursor: none !important;
-            }
+            ${!isTouchDevice ? '.cursor-none, .cursor-none * { cursor: none !important; }' : ''}
             .sky { position: fixed; height: 100vh; width: 100vw; background: #060010; background: linear-gradient( to bottom, #060010 0%, #060010 6%, #090016 11%, #070016 20%, #0a0121 48%, #0a0127 55%, #0a0129 57%, #0c012b 62%, #0e0131 68%, #0d012f 69%, #18023c 78%, #19023e 79%, #19023e 79%, #1c0242 81%, #22034b 85%, #2e045a 92%, #2f045e 96%, #340464 98%, #370569 100% ); z-index: -1; }
             .mountains { position: absolute; height: 80px; width: 100%; bottom: 0px; left: 0px; z-index: 2; }
             .light-base { 
@@ -964,12 +962,12 @@ export default function App() {
         return () => {
             if(document.body.contains(threeScript)) document.body.removeChild(threeScript);
             if(document.body.contains(ldrsScript)) document.body.removeChild(ldrsScript);
-            if(document.head.contains(style)) document.head.removeChild(style);
+            if(document.body.contains(style)) document.head.removeChild(style);
             if(document.head.contains(fontLink1)) document.head.removeChild(fontLink1);
             if(document.head.contains(fontLink2)) document.head.removeChild(fontLink2);
             if(document.head.contains(fontLink3)) document.head.removeChild(fontLink3);
         }
-    },[]);
+    },[isTouchDevice]);
 
     const renderPage = () => {
         switch(page) {
@@ -989,6 +987,7 @@ export default function App() {
     return (
         <div className={`flex flex-col min-h-screen transition-colors duration-300 bg-stone-50 dark:bg-transparent ${!isTouchDevice ? 'cursor-none' : ''}`} style={{ scrollBehavior: 'smooth' }}>
             {theme === 'dark' && <NightSkyBackground />}
+            {theme === 'light' && <ParticleBackground />}
             {isLoading ? <LoadingScreen /> : (
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
