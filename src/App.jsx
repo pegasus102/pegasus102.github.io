@@ -987,6 +987,7 @@ export default function App() {
     return (
         <div className={`flex flex-col min-h-screen transition-colors duration-300 bg-stone-50 dark:bg-transparent ${!isTouchDevice ? 'cursor-none' : ''}`} style={{ scrollBehavior: 'smooth' }}>
             {theme === 'dark' && <NightSkyBackground />}
+            {theme === 'light' && <ParticleBackground />}
             {isLoading ? <LoadingScreen /> : (
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
@@ -998,3 +999,4 @@ export default function App() {
         </div>
     );
 }
+
