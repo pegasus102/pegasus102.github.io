@@ -164,7 +164,7 @@ const CustomCursor = ({ theme }) => {
     );
 };
 
-// --- Particle Background Component ---
+// --- Particle Background Component with Denser Mesh Effect ---
 const ParticleBackground = ({ theme }) => {
     const [ init, setInit ] = useState(false);
 
@@ -176,6 +176,7 @@ const ParticleBackground = ({ theme }) => {
         });
     }, []);
 
+    // Only logic for Light Mode
     if (theme !== 'light') return null;
 
     const options = {
@@ -185,30 +186,30 @@ const ParticleBackground = ({ theme }) => {
             events: {
                 onHover: {
                     enable: true,
-                    mode: "grab", // Creates the mesh connection to cursor
+                    mode: "grab", 
                 },
                 resize: true,
             },
             modes: {
                 grab: {
-                    distance: 200,
+                    distance: 250, // React radius
                     links: {
-                        opacity: 0.8 // High visibility mesh around cursor
+                        opacity: 0.9 
                     }
                 }
             },
         },
         particles: {
-            color: { value: "#14b8a6" }, // Teal color for mesh
+            color: { value: "#14b8a6" }, 
             links: {
                 color: "#14b8a6",
-                distance: 150,
+                distance: 180, // Increased distance for higher connectivity
                 enable: true,
-                opacity: 0.3,
+                opacity: 0.4,
                 width: 1.5,
                 triangles: {
-                    enable: true, // Creates the geometric surfaces
-                    opacity: 0.1,
+                    enable: true, 
+                    opacity: 0.15,
                 }
             },
             move: {
@@ -226,7 +227,7 @@ const ParticleBackground = ({ theme }) => {
             },
             number: {
                 density: { enable: true, area: 800 },
-                value: 100, // Enough particles to form a dense mesh
+                value: 150, // Higher particle count for density
             },
             opacity: { value: 0.6 },
             shape: { type: "circle" },
@@ -1077,7 +1078,7 @@ export default function App() {
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
-                    {/* Call ParticleBackground */}
+                    {/* Call ParticleBackground with Theme prop */}
                     <ParticleBackground theme={theme} />
                     {renderPage()}
                     {page !== 'contact' && <Footer />}
