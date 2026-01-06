@@ -165,7 +165,7 @@ const CustomCursor = ({ theme }) => {
 };
 
 // --- Particle Background Component ---
-const ParticleBackground = () => {
+const ParticleBackground = ({ theme }) => {
     const [ init, setInit ] = useState(false);
 
     useEffect(() => {
@@ -175,6 +175,9 @@ const ParticleBackground = () => {
             setInit(true);
         });
     }, []);
+
+    // Only logic for Light Mode
+    if (theme !== 'light') return null;
 
     const options = {
         background: {
@@ -187,27 +190,33 @@ const ParticleBackground = () => {
             events: {
                 onHover: {
                     enable: true,
-                    mode: "repulse",
+                    mode: "grab",
                 },
                 resize: true,
             },
             modes: {
-                repulse: {
-                    distance: 100,
-                    duration: 0.4,
-                },
+                grab: {
+                    distance: 200,
+                    links: {
+                        opacity: 1
+                    }
+                }
             },
         },
         particles: {
             color: {
-                value: "#1f2937", // slate-800
+                value: "#1f2937", 
             },
             links: {
                 color: "#1f2937",
                 distance: 150,
                 enable: true,
-                opacity: 0.5,
+                opacity: 0.2,
                 width: 1,
+                triangles: {
+                    enable: true,
+                    opacity: 0.03,
+                }
             },
             move: {
                 direction: "none",
@@ -218,6 +227,11 @@ const ParticleBackground = () => {
                 random: false,
                 speed: 1,
                 straight: false,
+                attract: {
+                    enable: true,
+                    rotateX: 600,
+                    rotateY: 1200
+                }
             },
             number: {
                 density: {
@@ -227,13 +241,13 @@ const ParticleBackground = () => {
                 value: 80,
             },
             opacity: {
-                value: 0.5,
+                value: 0.4,
             },
             shape: {
                 type: "circle",
             },
             size: {
-                value: { min: 1, max: 5 },
+                value: { min: 1, max: 3 },
             },
         },
         detectRetina: true,
@@ -244,12 +258,12 @@ const ParticleBackground = () => {
             <Particles
                 id="tsparticles"
                 options={options}
-                className="fixed top-0 left-0 w-full h-full z-[-1]"
+                className="fixed top-0 left-0 w-full h-[180vh] z-[-1] pointer-events-none"
             />
         );
     }
 
-    return <></>;
+    return null;
 };
 
 
@@ -616,12 +630,12 @@ const EducationSection = () => {
                                <svg className="w-6 h-6 text-teal-500 dark:text-teal-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
                             </div>
                             <div className="bg-white dark:bg-slate-900 rounded-lg p-6 shadow-md border border-gray-200 dark:border-slate-700">
-                                <span className="text-teal-500 font-semibold block mb-2">{edu.years}</span>
-                                <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">{edu.degree}</h3>
-                                <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-4">{edu.university}</h4>
-                                <ul className="list-disc list-inside font-regular text-gray-500 dark:text-gray-300 space-y-2">
-                                    {edu.achievements.map((item, i) => <li key={i}>{item}</li>)}
-                                </ul>
+                                 <span className="text-teal-500 font-semibold block mb-2">{edu.years}</span>
+                                 <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">{edu.degree}</h3>
+                                 <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-4">{edu.university}</h4>
+                                 <ul className="list-disc list-inside font-regular text-gray-500 dark:text-gray-300 space-y-2">
+                                     {edu.achievements.map((item, i) => <li key={i}>{item}</li>)}
+                                 </ul>
                             </div>
                         </div>
                     ))}
@@ -825,7 +839,7 @@ const ContactPage = ({ contactMessage }) => {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Accept: "application/json"
+                    "Accept": "application/json"
                 },
                 body: JSON.stringify(data)
             });
@@ -1081,6 +1095,8 @@ export default function App() {
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
+                    {/* Updated ParticleBackground Call with Theme Prop */}
+                    <ParticleBackground theme={theme} />
                     {renderPage()}
                     {page !== 'contact' && <Footer />}
                 </>
