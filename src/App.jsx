@@ -164,7 +164,7 @@ const CustomCursor = ({ theme }) => {
     );
 };
 
-// --- Particle Background Component with Denser Mesh Effect ---
+// --- Particle Background Component with Requested Mess Effect ---
 const ParticleBackground = ({ theme }) => {
     const [ init, setInit ] = useState(false);
 
@@ -192,46 +192,47 @@ const ParticleBackground = ({ theme }) => {
             },
             modes: {
                 grab: {
-                    distance: 250, // React radius
+                    distance: 200,
                     links: {
-                        opacity: 0.9 
+                        opacity: 0.6 // Fades out lines based on cursor distance
                     }
                 }
             },
         },
         particles: {
-            color: { value: "#14b8a6" }, 
+            color: { 
+                // 75% blue, 25% pink as per your snippet
+                value: ["#51a2e9", "#51a2e9", "#51a2e9", "#ff4d5a"] 
+            },
             links: {
-                color: "#14b8a6",
-                distance: 180, // Increased distance for higher connectivity
+                color: "#51a2e9",
+                distance: 150,
                 enable: true,
-                opacity: 0.4,
-                width: 1.5,
-                triangles: {
-                    enable: true, 
-                    opacity: 0.15,
-                }
+                opacity: 0.3,
+                width: 0.5,
             },
             move: {
                 enable: true,
-                speed: 1,
+                speed: 1, // vx/vy logic from snippet
                 direction: "none",
-                random: false,
+                random: true,
                 straight: false,
                 outModes: { default: "bounce" },
-                attract: {
-                    enable: true,
-                    rotateX: 600,
-                    rotateY: 1200
-                }
             },
             number: {
                 density: { enable: true, area: 800 },
-                value: 150, // Higher particle count for density
+                value: window.innerWidth > 1100 ? 100 : 1, // Responsive count from snippet
             },
-            opacity: { value: 0.6 },
+            opacity: { 
+                value: { min: 0.2, max: 0.8 },
+                animation: {
+                    enable: true,
+                    speed: 1,
+                    minimumValue: 0.1
+                }
+            },
             shape: { type: "circle" },
-            size: { value: { min: 1, max: 3 } },
+            size: { value: { min: 0.5, max: 2 } }, // Matches dot radius from snippet
         },
         detectRetina: true,
     };
@@ -1068,7 +1069,6 @@ export default function App() {
         }
     };
     
-    // Logic to set conditional background
     const pageBgClass = theme === 'dark' ? 'bg-transparent' : (page === 'home' ? 'bg-transparent' : 'bg-stone-50');
 
     return (
@@ -1078,7 +1078,7 @@ export default function App() {
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
-                    {/* Call ParticleBackground with Theme prop */}
+                    {/* Updated ParticleBackground with Mess Effect logic */}
                     <ParticleBackground theme={theme} />
                     {renderPage()}
                     {page !== 'contact' && <Footer />}
