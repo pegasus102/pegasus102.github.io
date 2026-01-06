@@ -176,7 +176,7 @@ const ParticleBackground = ({ theme }) => {
             setInit(true);
         });
 
-        const updateCount = () => {
+        const updateDensity = () => {
             const w = window.innerWidth;
             if (w > 1600) setParticleCount(600);
             else if (w > 1300) setParticleCount(575);
@@ -185,10 +185,9 @@ const ParticleBackground = ({ theme }) => {
             else if (w > 600) setParticleCount(200);
             else setParticleCount(100);
         };
-
-        updateCount();
-        window.addEventListener('resize', updateCount);
-        return () => window.removeEventListener('resize', updateCount);
+        updateDensity();
+        window.addEventListener('resize', updateDensity);
+        return () => window.removeEventListener('resize', updateDensity);
     }, []);
 
     if (theme !== 'light') return null;
@@ -215,10 +214,11 @@ const ParticleBackground = ({ theme }) => {
         },
         particles: {
             color: { 
-                value: ["#51a2e9", "#51a2e9", "#51a2e9", "#51a2e9", "#ff4d5a"] 
+                // Updated to match Navbar Teal (#14b8a6)
+                value: ["#14b8a6"] 
             },
             links: {
-                color: "#51a2e9",
+                color: "#14b8a6",
                 distance: 70, 
                 enable: true,
                 opacity: 0.4,
@@ -262,7 +262,7 @@ const ParticleBackground = ({ theme }) => {
 };
 
 
-// --- Projects Page Component ---
+// --- New Components for Projects Page ---
 
 const ProjectDisplayCard = ({ title, description, imageUrl, tags, url }) => (
     <a href={url} target="_blank" rel="noopener noreferrer" className="rounded-2xl overflow-hidden shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 transform hover:-translate-y-1 flex flex-col bg-white dark:bg-slate-800 group">
@@ -315,7 +315,7 @@ const ProjectsPage = () => {
     );
 };
 
-// --- Blog Page Component ---
+// --- New Components for Blog Page ---
 const BlogPostCard = ({ title, excerpt, imageUrl, date, readingTime, url }) => (
     <a href={url} target="_blank" rel="noopener noreferrer" className="block bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-teal-500/20 group">
         <div className="w-full h-56 overflow-hidden">
@@ -340,7 +340,7 @@ const BlogPage = () => (
     </main>
 );
 
-// --- Night Sky Background Component ---
+// --- New Night Sky Background Component ---
 const NightSkyBackground = () => {
     const [stars, setStars] = useState([]);
 
@@ -1089,7 +1089,6 @@ export default function App() {
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
-                    {/* Call ParticleBackground with Theme prop */}
                     <ParticleBackground theme={theme} />
                     {renderPage()}
                     {page !== 'contact' && <Footer />}
