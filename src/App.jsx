@@ -164,7 +164,7 @@ const CustomCursor = ({ theme }) => {
     );
 };
 
-// --- Particle Background Component (Mess Effect Integrated) ---
+// --- Particle Background Component ---
 const ParticleBackground = ({ theme }) => {
     const [ init, setInit ] = useState(false);
     const [particleCount, setParticleCount] = useState(600);
@@ -176,7 +176,7 @@ const ParticleBackground = ({ theme }) => {
             setInit(true);
         });
 
-        const updateDensity = () => {
+        const updateCount = () => {
             const w = window.innerWidth;
             if (w > 1600) setParticleCount(600);
             else if (w > 1300) setParticleCount(575);
@@ -185,9 +185,10 @@ const ParticleBackground = ({ theme }) => {
             else if (w > 600) setParticleCount(200);
             else setParticleCount(100);
         };
-        updateDensity();
-        window.addEventListener('resize', updateDensity);
-        return () => window.removeEventListener('resize', updateDensity);
+
+        updateCount();
+        window.addEventListener('resize', updateCount);
+        return () => window.removeEventListener('resize', updateCount);
     }, []);
 
     if (theme !== 'light') return null;
@@ -206,7 +207,9 @@ const ParticleBackground = ({ theme }) => {
             modes: {
                 grab: {
                     distance: 300, 
-                    links: { opacity: 0.7 }
+                    links: {
+                        opacity: 0.7 
+                    }
                 }
             },
         },
@@ -220,10 +223,14 @@ const ParticleBackground = ({ theme }) => {
                 enable: true,
                 opacity: 0.4,
                 width: 0.5,
+                triangles: {
+                    enable: true,
+                    opacity: 0.05
+                }
             },
             move: {
                 enable: true,
-                speed: 1,
+                speed: 1, 
                 direction: "none",
                 random: true,
                 straight: false,
@@ -251,12 +258,11 @@ const ParticleBackground = ({ theme }) => {
             />
         );
     }
-
-    return <></>;
+    return null;
 };
 
 
-// --- New Components for Projects Page ---
+// --- Projects Page Component ---
 
 const ProjectDisplayCard = ({ title, description, imageUrl, tags, url }) => (
     <a href={url} target="_blank" rel="noopener noreferrer" className="rounded-2xl overflow-hidden shadow-lg hover:shadow-cyan-500/50 transition-all duration-300 transform hover:-translate-y-1 flex flex-col bg-white dark:bg-slate-800 group">
@@ -309,7 +315,7 @@ const ProjectsPage = () => {
     );
 };
 
-// --- New Components for Blog Page ---
+// --- Blog Page Component ---
 const BlogPostCard = ({ title, excerpt, imageUrl, date, readingTime, url }) => (
     <a href={url} target="_blank" rel="noopener noreferrer" className="block bg-white dark:bg-slate-800 rounded-lg shadow-lg overflow-hidden transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-teal-500/20 group">
         <div className="w-full h-56 overflow-hidden">
@@ -404,7 +410,7 @@ const Header = ({ isScrolled, handleNavigation, currentPage, theme, toggleTheme 
     
     const baseClasses = "fixed top-0 left-0 right-0 z-20 transition-all duration-300";
     const scrolledClasses = "bg-teal-500 shadow-lg py-3";
-    const topClasses = "bg-transparent py-4 dark:bg-transparent";
+    const topClasses = "bg-stone-50 bg-opacity-90 backdrop-blur-sm py-4 dark:bg-transparent";
 
     const isDarkBg = isScrolled || isMenuOpen;
     
@@ -587,6 +593,22 @@ const FeaturedWorkSection = () => {
         </section>
     );
 };
+
+
+const educationData = [
+    {
+        degree: ['B.Tech in Electronics and Instrumentation '],
+        university: 'Odisha Univeristy of Technology and Research, Bhubaneswar',
+        years: '2023 - 2027',
+        achievements: ['Focused on AI, Hardware Prototyping and Data Analytics.', 'Member of Alumni Relations Cell.']
+    },
+    {
+        degree: 'Higher Secondary Education',
+        university: 'DAV PUBLIC SCHOOL Pokhariput, Bhubaneswar',
+        years: '2021 - 2023',
+        achievements: ['Achieved 96.2%.', 'Scholar Distinction Awardee.']
+    }
+];
 
 const EducationSection = () => {
     const [ref, classes] = useFadeIn();
@@ -878,15 +900,13 @@ const ContactPage = ({ contactMessage }) => {
 // --- HomePage Wrapper ---
 const HomePage = ({ handleNavigation }) => (
     <>
-        <main className="flex-grow bg-transparent">
-            <Hero />
-            <AboutSection />
-            <EducationSection />
-            <FeaturedWorkSection />
-            <SkillsSection />
-            <CertificatesSection />
-            <GetInTouchSection handleNavigation={handleNavigation} />
-        </main>
+        <Hero />
+        <AboutSection />
+        <EducationSection />
+        <FeaturedWorkSection />
+        <SkillsSection />
+        <CertificatesSection />
+        <GetInTouchSection handleNavigation={handleNavigation} />
     </>
 );
 
