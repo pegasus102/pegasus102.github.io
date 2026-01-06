@@ -176,21 +176,16 @@ const ParticleBackground = ({ theme }) => {
         });
     }, []);
 
-    // Only logic for Light Mode
     if (theme !== 'light') return null;
 
     const options = {
-        background: {
-            color: {
-                value: "transparent",
-            },
-        },
+        background: { color: { value: "transparent" } },
         fpsLimit: 120,
         interactivity: {
             events: {
                 onHover: {
                     enable: true,
-                    mode: "grab",
+                    mode: "grab", // Creates the mesh connection to cursor
                 },
                 resize: true,
             },
@@ -198,35 +193,31 @@ const ParticleBackground = ({ theme }) => {
                 grab: {
                     distance: 200,
                     links: {
-                        opacity: 1
+                        opacity: 0.8 // High visibility mesh around cursor
                     }
                 }
             },
         },
         particles: {
-            color: {
-                value: "#1f2937", 
-            },
+            color: { value: "#14b8a6" }, // Teal color for mesh
             links: {
-                color: "#1f2937",
+                color: "#14b8a6",
                 distance: 150,
                 enable: true,
-                opacity: 0.2,
-                width: 1,
+                opacity: 0.3,
+                width: 1.5,
                 triangles: {
-                    enable: true,
-                    opacity: 0.03,
+                    enable: true, // Creates the geometric surfaces
+                    opacity: 0.1,
                 }
             },
             move: {
-                direction: "none",
                 enable: true,
-                outModes: {
-                    default: "bounce",
-                },
-                random: false,
                 speed: 1,
+                direction: "none",
+                random: false,
                 straight: false,
+                outModes: { default: "bounce" },
                 attract: {
                     enable: true,
                     rotateX: 600,
@@ -234,21 +225,12 @@ const ParticleBackground = ({ theme }) => {
                 }
             },
             number: {
-                density: {
-                    enable: true,
-                    area: 800,
-                },
-                value: 80,
+                density: { enable: true, area: 800 },
+                value: 100, // Enough particles to form a dense mesh
             },
-            opacity: {
-                value: 0.4,
-            },
-            shape: {
-                type: "circle",
-            },
-            size: {
-                value: { min: 1, max: 3 },
-            },
+            opacity: { value: 0.6 },
+            shape: { type: "circle" },
+            size: { value: { min: 1, max: 3 } },
         },
         detectRetina: true,
     };
@@ -258,11 +240,10 @@ const ParticleBackground = ({ theme }) => {
             <Particles
                 id="tsparticles"
                 options={options}
-                className="fixed top-0 left-0 w-full h-[180vh] z-[-1] pointer-events-none"
+                className="fixed top-0 left-0 w-full h-[180vh] z-0 pointer-events-none"
             />
         );
     }
-
     return null;
 };
 
@@ -415,7 +396,7 @@ const Header = ({ isScrolled, handleNavigation, currentPage, theme, toggleTheme 
     
     const baseClasses = "fixed top-0 left-0 right-0 z-20 transition-all duration-300";
     const scrolledClasses = "bg-teal-500 shadow-lg py-3";
-    const topClasses = "bg-stone-50 bg-opacity-90 backdrop-blur-sm py-4 dark:bg-transparent";
+    const topClasses = "bg-transparent py-4";
 
     const isDarkBg = isScrolled || isMenuOpen;
     
@@ -528,7 +509,7 @@ const Header = ({ isScrolled, handleNavigation, currentPage, theme, toggleTheme 
 };
 
 const Hero = () => (
-    <section className="pt-32 pb-16 flex justify-center items-center min-h-screen">
+    <section className="pt-32 pb-16 flex justify-center items-center min-h-screen bg-transparent">
         <div className="relative group">
             <div className="absolute inset-0 bg-teal-400 rounded-full transform -rotate-12 transition-all duration-500 group-hover:rotate-0 group-hover:scale-105"></div>
             <div className="relative p-2 bg-slate-800 rounded-full">
@@ -546,7 +527,7 @@ const Hero = () => (
 const AboutSection = () => {
     const [ref, classes] = useFadeIn();
     return (
-        <section id="about" ref={ref} className={`container mx-auto px-6 py-24 text-center ${classes}`}>
+        <section id="about" ref={ref} className={`container mx-auto px-6 py-24 text-center bg-transparent ${classes}`}>
             <h1 className="text-3xl md:text-5xl font-bold leading-tight max-w-4xl mx-auto text-slate-800 dark:text-white">
                 Hey, I'm <span className="text-teal-500">Siddharth Shankar Mahapatra</span>. Here, you can
                 check out what I'm working on. I try my best to create things with passion and heart.
@@ -731,6 +712,7 @@ const GlobeCanvas = () => {
 
     useEffect(() => {
         const currentMount = mountRef.current;
+        if (!currentMount) return;
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, currentMount.clientWidth / currentMount.clientHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -796,7 +778,9 @@ const GlobeCanvas = () => {
         window.addEventListener('resize', handleResize);
         return () => {
             window.removeEventListener('resize', handleResize);
-            currentMount.removeChild(renderer.domElement);
+            if (currentMount.contains(renderer.domElement)) {
+                currentMount.removeChild(renderer.domElement);
+            }
         };
     }, []);
 
@@ -813,7 +797,6 @@ const ContactPage = ({ contactMessage }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
 
-    // IMPORTANT: Access the key from environment variables
     const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
 
     const handleInput = (e) => {
@@ -903,7 +886,7 @@ const ContactPage = ({ contactMessage }) => {
 // --- HomePage Wrapper ---
 const HomePage = ({ handleNavigation }) => (
     <>
-        <main className="flex-grow">
+        <main className="flex-grow bg-transparent">
             <Hero />
             <AboutSection />
             <EducationSection />
@@ -940,14 +923,10 @@ export default function App() {
     const [isTouchDevice, setIsTouchDevice] = useState(false);
 
     useEffect(() => {
-        // Check for touch device
         setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
-        
-        // Simulate initial loading time
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2000); // Hide after 2 seconds
-
+        }, 2000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -1036,11 +1015,11 @@ export default function App() {
                 width: 80vw; 
                 height: 100px; 
                 border-radius: 50%; 
-                box-shadow: -0px -8px 20px 8px #0ff5, /* Faint Neon Cyan */
-                            -0px -15px 30px 15px #0af5, /* Faint Lighter Cyan */
-                            -0px -20px 40px 20px #a0f5, /* Faint Bright Purple */
-                            -0px -30px 80px 40px #50f5; /* Faint Deeper Blue/Purple */
-                background-color: #0ff5; /* Faint base color for the glow */
+                box-shadow: -0px -8px 20px 8px #0ff5,
+                            -0px -15px 30px 15px #0af5,
+                            -0px -20px 40px 20px #a0f5,
+                            -0px -30px 80px 40px #50f5; 
+                background-color: #0ff5; 
                 z-index: 1; 
             }
             .mountains-base { content: ""; background: linear-gradient( to bottom, rgba(55, 5, 105, 0) 0%, rgba(9, 0, 22, 1) 100% ); width: 100%; height: 100px; position: absolute; bottom: -10px; z-index: 3; }
@@ -1088,14 +1067,17 @@ export default function App() {
         }
     };
     
+    // Logic to set conditional background
+    const pageBgClass = theme === 'dark' ? 'bg-transparent' : (page === 'home' ? 'bg-transparent' : 'bg-stone-50');
+
     return (
-        <div className={`flex flex-col min-h-screen transition-colors duration-300 bg-stone-50 dark:bg-transparent ${!isTouchDevice ? 'cursor-none' : ''}`} style={{ scrollBehavior: 'smooth' }}>
+        <div className={`flex flex-col min-h-screen transition-colors duration-300 ${pageBgClass} ${!isTouchDevice ? 'cursor-none' : ''}`} style={{ scrollBehavior: 'smooth' }}>
             {theme === 'dark' && <NightSkyBackground />}
             {isLoading ? <LoadingScreen /> : (
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
-                    {/* Updated ParticleBackground Call with Theme Prop */}
+                    {/* Call ParticleBackground */}
                     <ParticleBackground theme={theme} />
                     {renderPage()}
                     {page !== 'contact' && <Footer />}
