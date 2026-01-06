@@ -164,9 +164,10 @@ const CustomCursor = ({ theme }) => {
     );
 };
 
-// --- Particle Background Component with Requested Mess Effect ---
+// --- Particle Background Component (Mess Effect Integrated) ---
 const ParticleBackground = ({ theme }) => {
     const [ init, setInit ] = useState(false);
+    const [particleCount, setParticleCount] = useState(600);
 
     useEffect(() => {
         initParticlesEngine(async (engine) => {
@@ -174,9 +175,21 @@ const ParticleBackground = ({ theme }) => {
         }).then(() => {
             setInit(true);
         });
+
+        const updateDensity = () => {
+            const w = window.innerWidth;
+            if (w > 1600) setParticleCount(600);
+            else if (w > 1300) setParticleCount(575);
+            else if (w > 1100) setParticleCount(500);
+            else if (w > 800) setParticleCount(300);
+            else if (w > 600) setParticleCount(200);
+            else setParticleCount(100);
+        };
+        updateDensity();
+        window.addEventListener('resize', updateDensity);
+        return () => window.removeEventListener('resize', updateDensity);
     }, []);
 
-    // Only logic for Light Mode
     if (theme !== 'light') return null;
 
     const options = {
@@ -192,28 +205,25 @@ const ParticleBackground = ({ theme }) => {
             },
             modes: {
                 grab: {
-                    distance: 200,
-                    links: {
-                        opacity: 0.6 // Fades out lines based on cursor distance
-                    }
+                    distance: 300, 
+                    links: { opacity: 0.7 }
                 }
             },
         },
         particles: {
             color: { 
-                // 75% blue, 25% pink as per your snippet
-                value: ["#51a2e9", "#51a2e9", "#51a2e9", "#ff4d5a"] 
+                value: ["#51a2e9", "#51a2e9", "#51a2e9", "#51a2e9", "#ff4d5a"] 
             },
             links: {
                 color: "#51a2e9",
-                distance: 150,
+                distance: 70, 
                 enable: true,
-                opacity: 0.3,
+                opacity: 0.4,
                 width: 0.5,
             },
             move: {
                 enable: true,
-                speed: 1, // vx/vy logic from snippet
+                speed: 1,
                 direction: "none",
                 random: true,
                 straight: false,
@@ -221,18 +231,13 @@ const ParticleBackground = ({ theme }) => {
             },
             number: {
                 density: { enable: true, area: 800 },
-                value: window.innerWidth > 1100 ? 100 : 1, // Responsive count from snippet
+                value: particleCount, 
             },
             opacity: { 
-                value: { min: 0.2, max: 0.8 },
-                animation: {
-                    enable: true,
-                    speed: 1,
-                    minimumValue: 0.1
-                }
+                value: { min: 0.3, max: 0.8 },
             },
             shape: { type: "circle" },
-            size: { value: { min: 0.5, max: 2 } }, // Matches dot radius from snippet
+            size: { value: { min: 0.5, max: 1.5 } }, 
         },
         detectRetina: true,
     };
@@ -246,7 +251,8 @@ const ParticleBackground = ({ theme }) => {
             />
         );
     }
-    return null;
+
+    return <></>;
 };
 
 
@@ -328,7 +334,7 @@ const BlogPage = () => (
     </main>
 );
 
-// --- New Night Sky Background Component ---
+// --- Night Sky Background Component ---
 const NightSkyBackground = () => {
     const [stars, setStars] = useState([]);
 
@@ -398,7 +404,7 @@ const Header = ({ isScrolled, handleNavigation, currentPage, theme, toggleTheme 
     
     const baseClasses = "fixed top-0 left-0 right-0 z-20 transition-all duration-300";
     const scrolledClasses = "bg-teal-500 shadow-lg py-3";
-    const topClasses = "bg-transparent py-4";
+    const topClasses = "bg-transparent py-4 dark:bg-transparent";
 
     const isDarkBg = isScrolled || isMenuOpen;
     
@@ -582,22 +588,6 @@ const FeaturedWorkSection = () => {
     );
 };
 
-
-const educationData = [
-    {
-        degree: ['B.Tech in Electronics and Instrumentation '],
-        university: 'Odisha Univeristy of Technology and Research, Bhubaneswar',
-        years: '2023 - 2027',
-        achievements: ['Focused on AI, Hardware Prototyping and Data Analytics.', 'Member of Alumni Relations Cell.']
-    },
-    {
-        degree: 'Higher Secondary Education',
-        university: 'DAV PUBLIC SCHOOL Pokhariput, Bhubaneswar',
-        years: '2021 - 2023',
-        achievements: ['Achieved 96.2%.', 'Scholar Distinction Awardee.']
-    }
-];
-
 const EducationSection = () => {
     const [ref, classes] = useFadeIn();
     return (
@@ -673,7 +663,7 @@ const CertificatesSection = () => {
 const GetInTouchSection = ({ handleNavigation }) => {
     const [ref, classes] = useFadeIn();
     return (
-        <section id="contact" ref={ref} className={`py-20 bg-gray-50 dark:bg-slate-800 ${classes}`}>
+        <section id="contact-trigger" ref={ref} className={`py-20 bg-gray-50 dark:bg-slate-800 ${classes}`}>
             <div className="container mx-auto px-6 text-center">
                 <h2 className="text-4xl font-bold mb-8 text-slate-800 dark:text-white">Get In Touch</h2>
                 <p className="text-lg text-gray-700 dark:text-gray-300 max-w-3xl mx-auto mb-8">Have a question or want to work together? Feel free to reach out!</p>
@@ -702,7 +692,7 @@ const Footer = () => {
                         </svg>
                     </a>
                 </div>
-                <p>&copy; 2025 SID. All Rights Reserved.</p>
+                <p>&copy; 2026 SID. All Rights Reserved.</p>
             </div>
         </footer>
     );
@@ -928,7 +918,8 @@ export default function App() {
         setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2000);
+        }, 2000); 
+
         return () => clearTimeout(timer);
     }, []);
 
@@ -1078,7 +1069,7 @@ export default function App() {
                 <>
                     {!isTouchDevice && <CustomCursor theme={theme} />}
                     <Header isScrolled={isScrolled} handleNavigation={handleNavigation} currentPage={page} theme={theme} toggleTheme={toggleTheme} />
-                    {/* Updated ParticleBackground with Mess Effect logic */}
+                    {/* Call ParticleBackground with Theme prop */}
                     <ParticleBackground theme={theme} />
                     {renderPage()}
                     {page !== 'contact' && <Footer />}
